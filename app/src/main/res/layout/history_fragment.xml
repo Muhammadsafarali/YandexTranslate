@@ -17,7 +17,7 @@
             android:layout_centerHorizontal="true" />
 
         <ListView
-            android:id="@+id/select_dialog_listview"
+            android:id="@+id/history_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/searchView"/>

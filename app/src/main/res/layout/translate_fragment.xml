@@ -8,16 +8,34 @@
     android:id="@+id/translate_layout"
     android:layout_height="match_parent">
 
-    <EditText
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_text_height"
-        android:inputType="textMultiLine"
-        android:gravity="top|left"
-        android:background="@drawable/edit_selector"
-        android:hint="Text"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:inputType="textMultiLine"
+            android:gravity="top|left"
+            android:background="@drawable/edit_selector"
+            android:hint="Text"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"/>
+
+        <ImageButton
+            android:id="@+id/delete_text"
+            android:onClick="DeleteClick"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignBottom="@+id/edit_text"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="true"
+            android:src="@drawable/delete"/>
+
+    </RelativeLayout>
+
 
 </LinearLayout>
