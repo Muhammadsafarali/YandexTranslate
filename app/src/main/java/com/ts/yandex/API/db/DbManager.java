@@ -25,15 +25,19 @@ public class DbManager extends Observable {
 
     private static final String LOG_TAG = "DbManager";
 
+    // Добавление в историю. Работает
     public void SaveHistory(Context context, String _text, TranslateResult _jobject) {
         Realm myRealm = RealmBase.getInstance(context);
 
         History history = myRealm.where(History.class).equalTo(Constant.from_lang, _text).findFirst();
         if (history == null) {
             Long id = (Long) myRealm.where(History.class).max(Constant.id);
-
+            if (id == null)
+                id = Long.valueOf(0);
+            else
+                id++;
             history = new History();
-//            history.setId(id+1);
+            history.setId(id);
             history.setFrom_lang(_text);
             history.setTo_lang(_jobject.getText().get(0));
             history.setFavorite(false);
@@ -42,8 +46,6 @@ public class DbManager extends Observable {
             RealmBase.save(myRealm, history);
         }
         myRealm.close();
-
-
     }
 
     // Получить список истории. Работает
@@ -117,6 +119,7 @@ public class DbManager extends Observable {
         myRealm.close();
     }
 
+    // Удаление списка истории. Работает
     public void DeleteHistory(Context context) {
         Realm myRealm = RealmBase.getInstance(context);
 
