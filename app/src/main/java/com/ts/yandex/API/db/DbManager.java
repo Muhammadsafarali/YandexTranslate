@@ -46,6 +46,8 @@ public class DbManager extends Observable {
             RealmBase.save(myRealm, history);
         }
         myRealm.close();
+        setChanged();
+        notifyObservers(_jobject.getText().get(0));
     }
 
     // Получить список истории. Работает

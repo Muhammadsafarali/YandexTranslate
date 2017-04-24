@@ -95,6 +95,7 @@
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/from_text"
                 android:text="Привет"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,27 +103,28 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:textSize="14sp" />
+                android:paddingBottom="2dp"/>
             <TextView
                 android:id="@+id/to_text"
                 android:text="Hi"
+                android:textSize="20sp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="5dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <LinearLayout
             android:layout_gravity="center"
-            android:layout_weight="8"
+            android:layout_weight="7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/lang"
                 android:gravity="center"
                 android:text="RU-EN"
+                android:textSize="21sp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_width="match_parent"

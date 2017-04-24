@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.ts.yandex.API.Facade;
 import com.ts.yandex.Adapter.HistoryList;
@@ -19,19 +20,24 @@ import com.ts.yandex.model.History;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Observer {
 
     private TabHost tabHost;
     private EditText editText;
     private static MenuItem menuItem;
     private HistoryList adapter;
+    private TextView translateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tabHost = (TabHost) findViewById(R.id.tabhost);
+        translateView = (TextView) findViewById(R.id.tv_translate);
+        Facade.getInstance().addObserver(this);
         editText = (EditText) findViewById(R.id.edit_text);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -100,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void DeleteClick(View view) {
         editText.setText("");
+        translateView.setText("");
     }
 
 
@@ -117,11 +124,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_remove_all) {
             Facade.getInstance().RemoveHistory();
+            GetHistory();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-
+    @Override
+    public void update(Observable observable, Object obj) {
+        if (obj != null) {
+            translateView.setText(String.valueOf(obj));
+        }
+    }
 }
