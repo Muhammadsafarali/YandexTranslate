@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TabHost tabHost;
     private TabLayout tabLayout;
     private EditText editText;
-    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
+//    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
 
@@ -149,14 +149,14 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int i = tabHost.getCurrentTab();
                 switch (i) {
                     case 0: {
-                        menuItem.setVisible(false);
+//                        menuItem.setVisible(false);
                     } break;
                     case 1: {
-                        menuItem.setVisible(true);
+//                        menuItem.setVisible(true);
                         MainActivity.this.GetHistory();
                     } break;
                     case 2: {
-                        menuItem.setVisible(false);
+//                        menuItem.setVisible(false);
                     } break;
                 }
             }
@@ -177,15 +177,21 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.delete, menu);
         menuItem = menu.findItem(R.id.menu_remove_all);
         menuItem.setVisible(false);
         return true;
+    }*/
+
+    public void RemoveHistoryClick(View view) {
+        Facade.getInstance().RemoveHistory();
+        GetHistory();
     }
 
-    @Override
+
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
@@ -195,8 +201,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
+    }*/
 
     @Override
     public void update(Observable observable, Object obj) {
@@ -204,5 +209,4 @@ public class MainActivity extends AppCompatActivity implements Observer {
             translateView.setText(String.valueOf(obj));
         }
     }
-
 }

@@ -37,7 +37,7 @@
 
         <ImageButton
             android:id="@+id/remove_history"
-            android:onClick="DeleteClick"
+            android:onClick="RemoveHistoryClick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"

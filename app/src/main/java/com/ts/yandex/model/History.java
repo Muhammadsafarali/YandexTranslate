@@ -19,15 +19,8 @@ public class History extends RealmObject {
     private String from_lang;   // текст на исходном языке
     private String to_lang;     // текст на целевом языке
     private Boolean favorite;   // true - в избранном
+    private Boolean deleted;    // true - очистил историю. Устанавливаю, если favorite is true
     private Date date;          // время запроса
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
 
     public long getId() {
         return id;
@@ -67,6 +60,22 @@ public class History extends RealmObject {
 
     public void setFavorite(Boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
 }
