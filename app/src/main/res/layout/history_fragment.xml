@@ -1,30 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:id="@+id/history_layout"
-    android:layout_height="match_parent">
+    android:id="@+id/history_fragment"
+    android:layout_height="wrap_content"
+    android:paddingBottom="50dp">
 
     <include layout="@layout/toolbar_history"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchView"
-            android:iconifiedByDefault="true"
-            android:queryHint="@string/search_hint"
-            android:layout_centerHorizontal="true" />
-
-        <ListView
-            android:id="@+id/history_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:layout_below="@+id/searchView"/>
-    </RelativeLayout>
 
 
 </LinearLayout>

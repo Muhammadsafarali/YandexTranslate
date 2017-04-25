@@ -1,6 +1,13 @@
 package com.ts.yandex;
 
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,8 +35,10 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements Observer {
 
     private TabHost tabHost;
+    private TabHost tabHostHistory;
+    private TabLayout tabLayout;
     private EditText editText;
-    private static MenuItem menuItem;
+    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
 
@@ -39,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         setupToolbar();
         tabHost = (TabHost) findViewById(R.id.tabhost);
+//        tabHostHistory = (TabHost) findViewById(R.id.tabhost_history);
+        tabLayout = (TabLayout) findViewById(R.id.home_tab_layout);
         translateView = (TextView) findViewById(R.id.tv_translate);
         Facade.getInstance().addObserver(this);
         editText = (EditText) findViewById(R.id.edit_text);
@@ -48,8 +59,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 1)
+                if (charSequence.length() > 1) {
+
+                    // Запрос к yandex api
                     Facade.getInstance().TranslateText(charSequence.toString());
+                }
             }
 
             @Override
@@ -58,6 +72,18 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
 
         initTabHost();
+//        initHistoryTabHost();
+        initTabLayout();
+    }
+
+    private void initTabLayout() {
+        tabLayout.addTab(tabLayout.newTab().setText("Running Order"));
+        tabLayout.addTab(tabLayout.newTab().setText("Order History"));
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        int count = tabLayout.getTabCount();
+        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+
     }
 
     private void setupToolbar() {
@@ -89,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("tab2");
-        tabSpec.setContent(R.id.history_layout);
+        tabSpec.setContent(R.id.history_fragment);
         tabSpec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.tab2_selector));
         tabHost.addTab(tabSpec);
 
@@ -110,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     } break;
                     case 1: {
                         menuItem.setVisible(true);
-                        MainActivity.this.GetHistory();
+//                        MainActivity.this.GetHistory();
                     } break;
                     case 2: {
                         menuItem.setVisible(false);
@@ -118,6 +144,38 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 }
             }
         });
+    }
+
+    public void initHistoryTabHost() {
+
+       /* tabHostHistory.setup();
+        TabHost.TabSpec tabSpec = tabHostHistory.newTabSpec("tab1");
+//        tabSpec.setContent(null);
+        tabSpec.setIndicator("История");
+        tabHostHistory.addTab(tabSpec);
+
+        tabSpec = tabHostHistory.newTabSpec("tab2");
+//        tabSpec.setContent(R.id.history_layout);
+        tabSpec.setIndicator("Избранное");
+        tabHostHistory.addTab(tabSpec);
+
+        tabHostHistory.setCurrentTab(0);*/
+
+        /*tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String s) {
+                int i = tabHost.getCurrentTab();
+                switch (i) {
+                    case 0: {
+                        menuItem.setVisible(false);
+                    } break;
+                    case 1: {
+                        menuItem.setVisible(true);
+//                        MainActivity.this.GetHistory();
+                    } break;
+                }
+            }
+        });*/
     }
 
     public void GetHistory() {
@@ -158,6 +216,32 @@ public class MainActivity extends AppCompatActivity implements Observer {
     public void update(Observable observable, Object obj) {
         if (obj != null) {
             translateView.setText(String.valueOf(obj));
+        }
+    }
+
+
+    public class PagerAdapter extends FragmentStatePagerAdapter {
+        int mNumOfTabs;
+        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+            super(fm);
+            this.mNumOfTabs = NumOfTabs;
+        }
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    LangsFragment tab1 = new LangsFragment();
+                    return tab1;
+                case 1:
+                    LangsFragment tab2 = new LangsFragment();
+                    return tab2;
+                default:
+                    return null;
+            }
+        }
+        @Override
+        public int getCount() {
+            return mNumOfTabs;
         }
     }
 }
