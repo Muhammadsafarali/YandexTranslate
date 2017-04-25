@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.ts.yandex.R;
 import com.ts.yandex.model.History;
@@ -58,18 +61,23 @@ public class HistoryList extends BaseAdapter {
 
         History h = getHistory(position);
 
-        // заполняем View в пункте списка данными из товаров: наименование, цена
-        // и картинка
         ((TextView) view.findViewById(R.id.from_text)).setText(h.getFrom_lang());
         ((TextView) view.findViewById(R.id.to_text)).setText(h.getTo_lang());
         ((TextView) view.findViewById(R.id.lang)).setText(h.getLang());
-       /* CheckBox cbBuy = (CheckBox) view.findViewById(R.id.cbBox);
+        CheckBox cb_favorite = (CheckBox) view.findViewById(R.id.favorite);
         // присваиваем чекбоксу обработчик
-        cbBuy.setOnCheckedChangeListener(myCheckChangeList);
+        cb_favorite.setOnCheckedChangeListener(myCheckChangeList);
         // пишем позицию
-        cbBuy.setTag(position);
-        // заполняем данными из товаров: в корзине или нет
-        cbBuy.setChecked(p.box);*/
+        cb_favorite.setTag(position);
+        cb_favorite.setChecked(h.getFavorite());
         return view;
     }
+
+    // Обработчик для чекбоксов
+    OnCheckedChangeListener myCheckChangeList = new OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView,
+                                     boolean isChecked) {
+            getHistory((Integer) buttonView.getTag()).setFavorite(isChecked);
+        }
+    };
 }
