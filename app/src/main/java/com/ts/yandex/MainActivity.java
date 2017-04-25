@@ -1,10 +1,19 @@
 package com.ts.yandex;
 
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,8 +35,9 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements Observer {
 
     private TabHost tabHost;
+    private TabLayout tabLayout;
     private EditText editText;
-    private static MenuItem menuItem;
+    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
 
@@ -35,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupToolbar();
         tabHost = (TabHost) findViewById(R.id.tabhost);
+        tabLayout = (TabLayout) findViewById(R.id.home_tab_layout);
         translateView = (TextView) findViewById(R.id.tv_translate);
         Facade.getInstance().addObserver(this);
         editText = (EditText) findViewById(R.id.edit_text);
@@ -45,8 +57,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 1)
+                if (charSequence.length() > 1) {
+
+                    // Запрос к yandex api
                     Facade.getInstance().TranslateText(charSequence.toString());
+                }
             }
 
             @Override
@@ -55,6 +70,57 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
 
         initTabHost();
+        initTabLayout();
+    }
+
+    private void initTabLayout() {
+        tabLayout.addTab(tabLayout.newTab().setText("История"));
+        tabLayout.addTab(tabLayout.newTab().setText("Избранное"));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0: {
+                        Log.e("LOG_MAIN_ACTIVITY", "position 0");
+                        GetHistory();
+                    } break;
+                    case 1: {
+                        Log.e("LOG_MAIN_ACTIVITY", "position 1");
+                        List<History> history = new ArrayList<>();
+                        adapter = new HistoryList(MainActivity.this, history);
+                        ListView lview = (ListView) findViewById(R.id.history_list);
+                        lview.setAdapter(adapter);
+                    } break;
+                }
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+    }
+
+    private void setupToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        TextView tvFromLangs = (TextView) findViewById(R.id.toolbar_from_langs);
+        tvFromLangs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("LOG_MAIN_ACTIVITY", "Get From Langs");
+            }
+        });
+        TextView tvToLangs = (TextView) findViewById(R.id.toolbar_to_langs);
+        tvToLangs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("LOG_MAIN_ACTIVITY", "Get To Langs");
+            }
+        });
     }
 
     public void initTabHost() {
@@ -66,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("tab2");
-        tabSpec.setContent(R.id.history_layout);
+        tabSpec.setContent(R.id.history_fragment);
         tabSpec.setIndicator("", ContextCompat.getDrawable(this, R.drawable.tab2_selector));
         tabHost.addTab(tabSpec);
 
@@ -96,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
             }
         });
     }
+
 
     public void GetHistory() {
         List<History> history = Facade.getInstance().GetHistory();
@@ -137,4 +204,5 @@ public class MainActivity extends AppCompatActivity implements Observer {
             translateView.setText(String.valueOf(obj));
         }
     }
+
 }
