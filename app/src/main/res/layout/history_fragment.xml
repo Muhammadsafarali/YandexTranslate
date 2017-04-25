@@ -6,6 +6,6 @@
     android:paddingBottom="50dp">
 
     <include layout="@layout/toolbar_history"/>
-
+    <include layout="@layout/history_list"/>
 
 </LinearLayout>

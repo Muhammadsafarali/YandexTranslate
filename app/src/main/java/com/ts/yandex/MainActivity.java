@@ -35,7 +35,6 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements Observer {
 
     private TabHost tabHost;
-    private TabHost tabHostHistory;
     private TabLayout tabLayout;
     private EditText editText;
     private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         setupToolbar();
         tabHost = (TabHost) findViewById(R.id.tabhost);
-//        tabHostHistory = (TabHost) findViewById(R.id.tabhost_history);
         tabLayout = (TabLayout) findViewById(R.id.home_tab_layout);
         translateView = (TextView) findViewById(R.id.tv_translate);
         Facade.getInstance().addObserver(this);
@@ -72,18 +70,37 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
 
         initTabHost();
-//        initHistoryTabHost();
         initTabLayout();
     }
 
     private void initTabLayout() {
-        tabLayout.addTab(tabLayout.newTab().setText("Running Order"));
-        tabLayout.addTab(tabLayout.newTab().setText("Order History"));
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        int count = tabLayout.getTabCount();
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
+        tabLayout.addTab(tabLayout.newTab().setText("История"));
+        tabLayout.addTab(tabLayout.newTab().setText("Избранное"));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0: {
+                        Log.e("LOG_MAIN_ACTIVITY", "position 0");
+                        GetHistory();
+                    } break;
+                    case 1: {
+                        Log.e("LOG_MAIN_ACTIVITY", "position 1");
+                        List<History> history = new ArrayList<>();
+                        adapter = new HistoryList(MainActivity.this, history);
+                        ListView lview = (ListView) findViewById(R.id.history_list);
+                        lview.setAdapter(adapter);
+                    } break;
+                }
 
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
     }
 
     private void setupToolbar() {
@@ -136,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     } break;
                     case 1: {
                         menuItem.setVisible(true);
-//                        MainActivity.this.GetHistory();
+                        MainActivity.this.GetHistory();
                     } break;
                     case 2: {
                         menuItem.setVisible(false);
@@ -146,37 +163,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
         });
     }
 
-    public void initHistoryTabHost() {
-
-       /* tabHostHistory.setup();
-        TabHost.TabSpec tabSpec = tabHostHistory.newTabSpec("tab1");
-//        tabSpec.setContent(null);
-        tabSpec.setIndicator("История");
-        tabHostHistory.addTab(tabSpec);
-
-        tabSpec = tabHostHistory.newTabSpec("tab2");
-//        tabSpec.setContent(R.id.history_layout);
-        tabSpec.setIndicator("Избранное");
-        tabHostHistory.addTab(tabSpec);
-
-        tabHostHistory.setCurrentTab(0);*/
-
-        /*tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String s) {
-                int i = tabHost.getCurrentTab();
-                switch (i) {
-                    case 0: {
-                        menuItem.setVisible(false);
-                    } break;
-                    case 1: {
-                        menuItem.setVisible(true);
-//                        MainActivity.this.GetHistory();
-                    } break;
-                }
-            }
-        });*/
-    }
 
     public void GetHistory() {
         List<History> history = Facade.getInstance().GetHistory();
@@ -219,29 +205,4 @@ public class MainActivity extends AppCompatActivity implements Observer {
         }
     }
 
-
-    public class PagerAdapter extends FragmentStatePagerAdapter {
-        int mNumOfTabs;
-        public PagerAdapter(FragmentManager fm, int NumOfTabs) {
-            super(fm);
-            this.mNumOfTabs = NumOfTabs;
-        }
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    LangsFragment tab1 = new LangsFragment();
-                    return tab1;
-                case 1:
-                    LangsFragment tab2 = new LangsFragment();
-                    return tab2;
-                default:
-                    return null;
-            }
-        }
-        @Override
-        public int getCount() {
-            return mNumOfTabs;
-        }
-    }
 }
