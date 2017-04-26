@@ -87,7 +87,7 @@ public class HistoryList extends BaseAdapter {
         }
 
         // присваиваем чекбоксу обработчик
-//        cb_favorite.setOnCheckedChangeListener(myCheckChangeList);
+        cb_favorite.setOnCheckedChangeListener(myCheckChangeList);
         return view;
     }
 
@@ -98,7 +98,7 @@ public class HistoryList extends BaseAdapter {
             int position = (Integer) buttonView.getTag();
             History history = getHistory(position);
             getHistory(position).setFavorite(isChecked);
-//            Facade.getInstance().MarkFavorite(history, isChecked);
+            Facade.getInstance().MarkFavorite(history, isChecked);
             Log.e(LOG_TAG, "isChecked");
         }
     };
