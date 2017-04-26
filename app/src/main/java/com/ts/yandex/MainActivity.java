@@ -1,22 +1,14 @@
 package com.ts.yandex;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -37,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TabHost tabHost;
     private TabLayout tabLayout;
     private EditText editText;
-//    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
 
@@ -90,10 +81,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
                         // Отобразить список избранного
                         List<History> favorite = Facade.getInstance().GetFavorite();
                         PrintHistory(favorite);
-                        /*List<History> history = new ArrayList<>();
-                        adapter = new HistoryList(MainActivity.this, history);
-                        ListView lview = (ListView) findViewById(R.id.history_list);
-                        lview.setAdapter(adapter);*/
                     } break;
                 }
 
@@ -153,14 +140,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int i = tabHost.getCurrentTab();
                 switch (i) {
                     case 0: {
-//                        menuItem.setVisible(false);
                     } break;
                     case 1: {
-//                        menuItem.setVisible(true);
                         MainActivity.this.PrintHistory(Facade.getInstance().GetHistory());
                     } break;
                     case 2: {
-//                        menuItem.setVisible(false);
                     } break;
                 }
             }
@@ -169,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
 
     public void PrintHistory(List<History> history) {
-//        List<History> history = Facade.getInstance().GetHistory();
         adapter = new HistoryList(this, history);
         ListView lview = (ListView) findViewById(R.id.history_list);
         lview.setAdapter(adapter);
@@ -180,32 +163,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
         translateView.setText("");
     }
 
-
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.delete, menu);
-        menuItem = menu.findItem(R.id.menu_remove_all);
-        menuItem.setVisible(false);
-        return true;
-    }*/
-
     public void RemoveHistoryClick(View view) {
         Facade.getInstance().RemoveHistory();
         PrintHistory(new ArrayList<History>());
     }
-
-
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menu_remove_all) {
-            Facade.getInstance().RemoveHistory();
-            GetHistory();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public void update(Observable observable, Object obj) {
