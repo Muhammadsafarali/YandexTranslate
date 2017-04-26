@@ -105,7 +105,7 @@ public class DbManager extends Observable {
             }
         }
         myRealm.close();
-        return null;
+        return new ArrayList<>();
     }
 
     // Добавление в избранное. Работает
