@@ -26,26 +26,27 @@ public class DbManager extends Observable {
     private static final String LOG_TAG = "DbManager";
 
     // Добавление в историю. Работает
-    public void SaveHistory(Context context, String _text, TranslateResult _jobject) {
-        Realm myRealm = RealmBase.getInstance(context);
+    public void SaveHistory(Context context, final String _text, final TranslateResult _jobject) {
+        final Realm myRealm = RealmBase.getInstance(context);
 
-        History history = myRealm.where(History.class).equalTo(Constant.from_lang, _text).findFirst();
-        if (history == null) {
-            Long id = (Long) myRealm.where(History.class).max(Constant.id);
-            if (id == null)
-                id = Long.valueOf(0);
-            else
-                id++;
-            history = new History();
-            history.setId(id);
-            history.setFrom_lang(_text);
-            history.setTo_lang(_jobject.getText().get(0));
-            history.setFavorite(false);
-            history.setLang(_jobject.getLang());
-            history.setDate(new Date());
-            RealmBase.save(myRealm, history);
+        Long id = (Long)myRealm.where(History.class).max(Constant.id);
+        Integer nextId;
+        if (id == null) {
+            nextId = 1;
         }
+        else {
+            nextId = id.intValue() + 1;
+        }
+        History h = new History();
+        h.setId(nextId);
+        h.setFrom_lang(_text);
+        h.setTo_lang(_jobject.getText().get(0));
+        h.setFavorite(false);
+        h.setLang(_jobject.getLang());
+        h.setDate(new Date());
+        RealmBase.save(myRealm, h);
         myRealm.close();
+
         setChanged();
         notifyObservers(_jobject.getText().get(0));
     }
@@ -54,19 +55,20 @@ public class DbManager extends Observable {
     public List<History> GetHistory(Context context) {
         Realm myRealm = RealmBase.getInstance(context);
 
-        RealmResults<History> result = myRealm.where(History.class).findAll();
-        if (result != null) {
-            if (result.size() > 0) {
-                result.sort(Constant.date, Sort.DESCENDING);
+        RealmResults<History> results = myRealm.where(History.class).findAll();
+        if (results != null) {
+            if (results.size() > 0) {
+                results.sort(Constant.date, Sort.DESCENDING);
 
                 List<History> list = new ArrayList<>();
-                for (int i = 0; i < result.size(); i++) {
+                for (int i = 0; i < results.size(); i++) {
                     History history = new History();
-                    history.setFrom_lang(result.get(i).getFrom_lang());
-                    history.setTo_lang(result.get(i).getTo_lang());
-                    history.setFavorite(result.get(i).getFavorite());
-                    history.setLang(result.get(i).getLang());
-                    history.setDate(result.get(i).getDate());
+                    history.setId(results.get(i).getId());
+                    history.setFrom_lang(results.get(i).getFrom_lang());
+                    history.setTo_lang(results.get(i).getTo_lang());
+                    history.setFavorite(results.get(i).getFavorite());
+                    history.setLang(results.get(i).getLang());
+                    history.setDate(results.get(i).getDate());
                     list.add(history);
                 }
 
@@ -81,20 +83,21 @@ public class DbManager extends Observable {
     public List<History> GetFaforite(Context context) {
         Realm myRealm = RealmBase.getInstance(context);
 
-        RealmResults<History> result = myRealm.where(History.class).equalTo(Constant.favorite, true).findAll();
-        if (result != null) {
-            if (result.size() > 0) {
-                result.sort(Constant.date, Sort.DESCENDING);
+        RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.favorite, true).findAll();
+        if (results != null) {
+            if (results.size() > 0) {
+                results.sort(Constant.date, Sort.DESCENDING);
 
                 List<History> list = new ArrayList<>();
-                for (int i = 0; i < result.size(); i++) {
-                    History history = new History();
-                    history.setFrom_lang(result.get(i).getFrom_lang());
-                    history.setTo_lang(result.get(i).getTo_lang());
-                    history.setFavorite(result.get(i).getFavorite());
-                    history.setLang(result.get(i).getLang());
-                    history.setDate(result.get(i).getDate());
-                    list.add(history);
+                for (int i = 0; i < results.size(); i++) {
+                    History h = new History();
+                    h.setId(results.get(i).getId());
+                    h.setFrom_lang(results.get(i).getFrom_lang());
+                    h.setTo_lang(results.get(i).getTo_lang());
+                    h.setFavorite(results.get(i).getFavorite());
+                    h.setLang(results.get(i).getLang());
+                    h.setDate(results.get(i).getDate());
+                    list.add(h);
                 }
 
                 myRealm.close();
@@ -105,19 +108,19 @@ public class DbManager extends Observable {
         return null;
     }
 
-    public void MarkFavorite(Context context, String _text, Boolean _favorite) {
+    // Добавление в избранное. Работает
+    public void MarkFavorite(Context context, History _history, boolean _favorite) {
         Realm myRealm = RealmBase.getInstance(context);
 
-        History result = myRealm.where(History.class).equalTo(Constant.from_lang, _text).findFirst();
-        if (result != null) {
-            History h = new History();
-            h.setId(result.getId());
-            h.setFrom_lang(result.getFrom_lang());
-            h.setTo_lang(result.getTo_lang());
-            h.setLang(result.getLang());
-            h.setDate(result.getDate());
-            h.setFavorite(_favorite);
-        }
+        History h = new History();
+        h.setId(_history.getId());
+        h.setFrom_lang(_history.getFrom_lang());
+        h.setTo_lang(_history.getTo_lang());
+        h.setLang(_history.getLang());
+        h.setDate(_history.getDate());
+        h.setFavorite(_favorite);
+        RealmBase.save(myRealm, h);
+
         myRealm.close();
     }
 

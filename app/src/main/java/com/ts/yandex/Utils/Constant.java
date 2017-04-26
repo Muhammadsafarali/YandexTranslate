@@ -9,7 +9,7 @@ public class Constant {
     public final static String ENDPOINT = "https://translate.yandex.net/api/v1.5/";
     public final static String KEY = "trnsl.1.1.20170422T031034Z.0f74693652d2ed61.5efed30b7707142db238994f859c9db42f46de09";
     public final static String BASE_NAME = "History.realm";
-    public final static int BASE_VERSION = 0;
+    public final static int BASE_VERSION = 2;
 
 
     //  ==========  History field  ==========
