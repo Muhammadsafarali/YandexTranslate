@@ -82,15 +82,18 @@ public class MainActivity extends AppCompatActivity implements Observer {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0: {
-                        Log.e("LOG_MAIN_ACTIVITY", "position 0");
-                        GetHistory();
+                        // Отобразить список истории
+                        List<History> history = Facade.getInstance().GetHistory();
+                        PrintHistory(history);
                     } break;
                     case 1: {
-                        Log.e("LOG_MAIN_ACTIVITY", "position 1");
-                        List<History> history = new ArrayList<>();
+                        // Отобразить список избранного
+                        List<History> favorite = Facade.getInstance().GetFavorite();
+                        PrintHistory(favorite);
+                        /*List<History> history = new ArrayList<>();
                         adapter = new HistoryList(MainActivity.this, history);
                         ListView lview = (ListView) findViewById(R.id.history_list);
-                        lview.setAdapter(adapter);
+                        lview.setAdapter(adapter);*/
                     } break;
                 }
 
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     } break;
                     case 1: {
 //                        menuItem.setVisible(true);
-                        MainActivity.this.GetHistory();
+                        MainActivity.this.PrintHistory(Facade.getInstance().GetHistory());
                     } break;
                     case 2: {
 //                        menuItem.setVisible(false);
@@ -165,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
 
-    public void GetHistory() {
-        List<History> history = Facade.getInstance().GetHistory();
+    public void PrintHistory(List<History> history) {
+//        List<History> history = Facade.getInstance().GetHistory();
         adapter = new HistoryList(this, history);
         ListView lview = (ListView) findViewById(R.id.history_list);
         lview.setAdapter(adapter);
@@ -188,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
     public void RemoveHistoryClick(View view) {
         Facade.getInstance().RemoveHistory();
-        GetHistory();
+        PrintHistory(new ArrayList<History>());
     }
 
 

@@ -44,6 +44,10 @@ public class Facade extends Observable implements Observer {
         return dbManager.GetHistory(myApplication.getInstance());
     }
 
+    public List<History> GetFavorite() {
+        return dbManager.GetFaforite(myApplication.getInstance());
+    }
+
     public void RemoveHistory() {
         dbManager.DeleteHistory(myApplication.getInstance());
     }
