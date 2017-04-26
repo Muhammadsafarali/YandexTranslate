@@ -48,6 +48,10 @@ public class Facade extends Observable implements Observer {
         dbManager.DeleteHistory(myApplication.getInstance());
     }
 
+    public void MarkFavorite(History _history, boolean _mark) {
+        dbManager.MarkFavorite(myApplication.getInstance(), _history, _mark);
+    }
+
     @Override
     public void update(Observable observable, Object obj) {
         setChanged();

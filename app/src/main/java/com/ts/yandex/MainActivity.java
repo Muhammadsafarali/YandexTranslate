@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         initTabHost();
         initTabLayout();
+//        Facade.getInstance().RemoveHistory();
     }
 
     private void initTabLayout() {

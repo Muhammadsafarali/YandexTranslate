@@ -14,7 +14,7 @@ import io.realm.annotations.RealmClass;
 public class History extends RealmObject {
 
     @PrimaryKey
-    private long id;
+    private int id;
     private String lang;        // ru-en (с русского на англ)
     private String from_lang;   // текст на исходном языке
     private String to_lang;     // текст на целевом языке
@@ -22,11 +22,11 @@ public class History extends RealmObject {
     private Boolean deleted;    // true - очистил историю. Устанавливаю, если favorite is true
     private Date date;          // время запроса
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
