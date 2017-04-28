@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 //    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
+    private int tabPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                tabPosition = tab.getPosition();
                 switch (tab.getPosition()) {
                     case 0: {
                         // Отобразить список истории
@@ -90,10 +92,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
                         // Отобразить список избранного
                         List<History> favorite = Facade.getInstance().GetFavorite();
                         PrintHistory(favorite);
-                        /*List<History> history = new ArrayList<>();
-                        adapter = new HistoryList(MainActivity.this, history);
-                        ListView lview = (ListView) findViewById(R.id.history_list);
-                        lview.setAdapter(adapter);*/
                     } break;
                 }
 
@@ -190,7 +188,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }*/
 
     public void RemoveHistoryClick(View view) {
-        Facade.getInstance().RemoveHistory();
+        if (tabPosition == 0)
+            Facade.getInstance().RemoveHistory();
+        if (tabPosition == 1)
+            Facade.getInstance().RemoveFaforite();
         PrintHistory(new ArrayList<History>());
     }
 

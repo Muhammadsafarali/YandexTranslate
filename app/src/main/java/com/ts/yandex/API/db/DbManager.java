@@ -56,29 +56,37 @@ public class DbManager extends Observable {
     public List<History> GetHistory(Context context) {
         Realm myRealm = RealmBase.getInstance(context);
 
-        RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.deleted, false).findAll();
-        if (results != null) {
-            if (results.size() > 0) {
-                results.sort(Constant.date, Sort.DESCENDING);
+        // Очистить удаленные ранее из истории и исключенные из избранного позже записи.
+        RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.deleted, true).equalTo(Constant.favorite, false).findAll();
+        if (results != null && results.size() > 0) {
+            myRealm.beginTransaction();
+            results.clear();
+            myRealm.commitTransaction();
+        }
 
-                List<History> list = new ArrayList<>();
-                for (int i = 0; i < results.size(); i++) {
-                    History h = new History();
-                    h.setId(results.get(i).getId());
-                    h.setFrom_lang(results.get(i).getFrom_lang());
-                    h.setTo_lang(results.get(i).getTo_lang());
-                    h.setFavorite(results.get(i).getFavorite());
-                    h.setLang(results.get(i).getLang());
-                    h.setDeleted(results.get(i).getDeleted());
-                    h.setDate(results.get(i).getDate());
-                    list.add(h);
-                }
+        // Получить все неудаленные записи
+        results = myRealm.where(History.class).equalTo(Constant.deleted, false).findAll();
+        if (results != null && results.size() > 0) {
+            results.sort(Constant.date, Sort.DESCENDING);
 
-                myRealm.close();
-                return list;
+            List<History> list = new ArrayList<>();
+            for (int i = 0; i < results.size(); i++) {
+                History h = new History();
+                h.setId(results.get(i).getId());
+                h.setFrom_lang(results.get(i).getFrom_lang());
+                h.setTo_lang(results.get(i).getTo_lang());
+                h.setFavorite(results.get(i).getFavorite());
+                h.setLang(results.get(i).getLang());
+                h.setDeleted(results.get(i).getDeleted());
+                h.setDate(results.get(i).getDate());
+                list.add(h);
             }
+
+            myRealm.close();
+            return list;
         }
         myRealm.close();
+
         return new ArrayList<>();
     }
 
@@ -118,29 +126,49 @@ public class DbManager extends Observable {
         myRealm.close();
     }
 
-    // Удаление списка истории. Работает
+    // Удаление списка истории.
     public void DeleteHistory(Context context) {
         Realm myRealm = RealmBase.getInstance(context);
 
-//        RealmResults<History> history = myRealm.where(History.class).equalTo(Constant.favorite, false).findAll();
-        RealmResults<History> history = myRealm.where(History.class).findAll();
+        RealmResults<History> history = myRealm.where(History.class).equalTo(Constant.favorite, false).findAll();
         if (history != null) {
             myRealm.beginTransaction();
             history.clear();
             myRealm.commitTransaction();
 
             history = myRealm.where(History.class).findAll();
-            if (history != null) {
+            if (history != null && history.size() > 0) {
                 List<History> list = new ArrayList<>();
                 list.addAll(history);
                 myRealm.beginTransaction();
                 for (History h : list) {
-                    h.setDeleted(false);
+                    h.setDeleted(true);
                 }
                 myRealm.commitTransaction();
             }
         }
         myRealm.close();
+    }
+
+    public void DeleteFavorite(Context context) {
+        Realm myRealm = RealmBase.getInstance(context);
+
+        RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.favorite, true).equalTo(Constant.deleted, true).findAll();
+        if (results != null && results.size() > 0) {
+            myRealm.beginTransaction();
+            results.clear();
+            myRealm.commitTransaction();
+        }
+        results = myRealm.where(History.class).equalTo(Constant.favorite, true).findAll();
+        if (results != null && results.size() > 0) {
+            List<History> list = new ArrayList<>();
+            list.addAll(results);
+            myRealm.beginTransaction();
+            for (History h : list) {
+                h.setFavorite(false);
+            }
+            myRealm.commitTransaction();
+        }
     }
 
 }
