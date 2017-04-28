@@ -59,9 +59,7 @@ public class DbManager extends Observable {
         // Очистить удаленные ранее из истории и исключенные из избранного позже записи.
         RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.deleted, true).equalTo(Constant.favorite, false).findAll();
         if (results != null && results.size() > 0) {
-            myRealm.beginTransaction();
-            results.clear();
-            myRealm.commitTransaction();
+            RealmBase.deleteList(myRealm, results);
         }
 
         // Получить все неудаленные записи
@@ -132,9 +130,7 @@ public class DbManager extends Observable {
 
         RealmResults<History> history = myRealm.where(History.class).equalTo(Constant.favorite, false).findAll();
         if (history != null) {
-            myRealm.beginTransaction();
-            history.clear();
-            myRealm.commitTransaction();
+            RealmBase.deleteList(myRealm, history);
 
             history = myRealm.where(History.class).findAll();
             if (history != null && history.size() > 0) {
@@ -155,9 +151,7 @@ public class DbManager extends Observable {
 
         RealmResults<History> results = myRealm.where(History.class).equalTo(Constant.favorite, true).equalTo(Constant.deleted, true).findAll();
         if (results != null && results.size() > 0) {
-            myRealm.beginTransaction();
-            results.clear();
-            myRealm.commitTransaction();
+            RealmBase.deleteList(myRealm, results);
         }
         results = myRealm.where(History.class).equalTo(Constant.favorite, true).findAll();
         if (results != null && results.size() > 0) {
