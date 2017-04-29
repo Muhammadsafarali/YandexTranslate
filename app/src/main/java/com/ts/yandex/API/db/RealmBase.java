@@ -9,6 +9,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 /**
  * Created by root on 24.04.2017.
@@ -32,6 +33,12 @@ public class RealmBase {
 
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(data);
+        realm.commitTransaction();
+    }
+
+    public static void deleteList(@NonNull Realm realm, RealmResults<?> data) {
+        realm.beginTransaction();
+        data.clear();
         realm.commitTransaction();
     }
 

@@ -72,7 +72,6 @@ public class HistoryList extends BaseAdapter {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 getHistory(position).setFavorite(isChecked);
-                Log.e(LOG_TAG, "isChecked");
             }
         });
 
@@ -97,8 +96,7 @@ public class HistoryList extends BaseAdapter {
             int position = (Integer) buttonView.getTag();
             History history = getHistory(position);
             getHistory(position).setFavorite(isChecked);
-            Facade.getInstance().MarkFavorite(history, isChecked);
-            Log.e(LOG_TAG, "isChecked");
+            Facade.getInstance().MarkFavorite(history);
         }
     };
 

@@ -18,6 +18,7 @@ public class Constant {
     public final static String from_lang = "from_lang";   // текст на исходном языке
     public final static String to_lang = "to_lang";       // текст на целевом языке
     public final static String favorite = "favorite";     // true - в избранном
+    public final static String deleted = "deleted";
     public final static String date = "date";             // время запроса
 
 

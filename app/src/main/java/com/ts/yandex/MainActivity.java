@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private EditText editText;
     private HistoryList adapter;
     private TextView translateView;
+    private int tabPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         initTabHost();
         initTabLayout();
-//        Facade.getInstance().RemoveHistory();
+//        Facade.getInstance().RemoveHistory();/**/
     }
 
     private void initTabLayout() {
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                tabPosition = tab.getPosition();
                 switch (tab.getPosition()) {
                     case 0: {
                         // Отобразить список истории
@@ -164,7 +166,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     public void RemoveHistoryClick(View view) {
-        Facade.getInstance().RemoveHistory();
+        if (tabPosition == 0)
+            Facade.getInstance().RemoveHistory();
+        if (tabPosition == 1)
+            Facade.getInstance().RemoveFaforite();
         PrintHistory(new ArrayList<History>());
     }
 
