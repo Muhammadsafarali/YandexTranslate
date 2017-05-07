@@ -1,7 +1,9 @@
 package com.ts.yandex;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements Observer {
+
+    private final static String LOG_TAG = "MAIN_ACTIVITY";
 
     private TabHost tabHost;
     private TabLayout tabLayout;
@@ -104,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tvFromLangs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                LangsFragment fragment = new LangsFragment();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.cont,fragment).commit();
+                Intent intent = new Intent(MainActivity.this, LangsActivity.class);
+                startActivity(intent);
                 Log.e("LOG_MAIN_ACTIVITY", "Get From Langs");
             }
         });
@@ -204,5 +212,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
         if (obj != null) {
             translateView.setText(String.valueOf(obj));
         }
+    }
+
+    public void GetLang(View view) {
+        Log.e(LOG_TAG, "GetLang");
     }
 }

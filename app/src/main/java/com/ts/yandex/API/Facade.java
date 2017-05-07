@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.ts.yandex.API.db.DbManager;
 import com.ts.yandex.API.network.HttpManager;
 import com.ts.yandex.model.History;
+import com.ts.yandex.model.Langs;
 import com.ts.yandex.model.TranslateResult;
 import com.ts.yandex.myApplication;
 
@@ -46,6 +47,14 @@ public class Facade extends Observable implements Observer {
 
     public List<History> GetFavorite() {
         return dbManager.GetFaforite(myApplication.getInstance());
+    }
+
+    public void getLangs() {
+        httpManager.getLangs();
+    }
+
+    public void SaveLangs(Langs _jobject) {
+
     }
 
     public void RemoveHistory() {
