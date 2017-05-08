@@ -3,14 +3,15 @@ package com.ts.yandex;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -18,12 +19,16 @@ import android.widget.TextView;
 
 import com.ts.yandex.API.Facade;
 import com.ts.yandex.Adapter.HistoryList;
+import com.ts.yandex.Utils.Constant;
 import com.ts.yandex.model.History;
+import com.ts.yandex.model.ResultObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements Observer {
 
@@ -37,6 +42,12 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TextView translateView;
     private int tabPosition;
 
+    private TextView ToolBarFromLang;
+    private TextView ToolBarToLang;
+
+    private Timer timer = new Timer();
+    private final long DELAY = 1000; // мс
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,20 +59,34 @@ public class MainActivity extends AppCompatActivity implements Observer {
         Facade.getInstance().addObserver(this);
         editText = (EditText) findViewById(R.id.edit_text);
         editText.addTextChangedListener(new TextWatcher() {
+
+            String text;
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 1) {
-
-                    // Запрос к yandex api
-                    Facade.getInstance().TranslateText(charSequence.toString());
+                   text = charSequence.toString();
+                    if (timer != null)
+                        timer.cancel();
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable editable) { }
+            public void afterTextChanged(final Editable s) {
+                if (s.length() >= 2) {
+
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Facade.getInstance().TranslateText(text);
+                        }
+                    }, DELAY);
+                }
+            }
         });
 
 
@@ -108,18 +133,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
         tvFromLangs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                LangsFragment fragment = new LangsFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.cont,fragment).commit();
                 Intent intent = new Intent(MainActivity.this, LangsActivity.class);
-                startActivity(intent);
-                Log.e("LOG_MAIN_ACTIVITY", "Get From Langs");
+                startActivityForResult(intent, Constant.FromLangCode);
             }
         });
         TextView tvToLangs = (TextView) findViewById(R.id.toolbar_to_langs);
         tvToLangs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("LOG_MAIN_ACTIVITY", "Get To Langs");
+                Intent intent = new Intent(MainActivity.this, LangsActivity.class);
+                startActivityForResult(intent, Constant.ToLangCode);
             }
         });
     }
@@ -208,13 +231,31 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }*/
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case Constant.FromLangCode: {
+                String from = data.getStringExtra(Constant.FromLangExtra);
+            }break;
+            case Constant.ToLangCode: {
+                String to = data.getStringExtra(Constant.ToLangExtra);
+            } break;
+            default: return;
+        }
+    }
+
+    @Override
     public void update(Observable observable, Object obj) {
         if (obj != null) {
-            translateView.setText(String.valueOf(obj));
+            ResultObserver result = (ResultObserver)obj;
+            if (result.getCode() == Constant.translate_save_complete) {
+                translateView.setText(String.valueOf(result.getObj()));
+            }
         }
     }
 
     public void GetLang(View view) {
         Log.e(LOG_TAG, "GetLang");
     }
+
+
 }

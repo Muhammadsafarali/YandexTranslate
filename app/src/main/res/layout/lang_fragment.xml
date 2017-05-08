@@ -5,12 +5,9 @@
 
     <include layout="@layout/toolbar_lang"/>
 
-    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-        android:id="@+id/list_my_tsh_date"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
+    <ListView
+        android:id="@+id/lang_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </se.emilsjolander.stickylistheaders.StickyListHeadersListView>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

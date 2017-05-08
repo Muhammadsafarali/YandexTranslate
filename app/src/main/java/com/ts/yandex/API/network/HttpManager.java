@@ -82,7 +82,9 @@ public class HttpManager {
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject != null) {
                             Langs result = Routes.Factory.getGson().fromJson(jsonObject, Langs.class);
-
+                            if (result != null) {
+                                Facade.getInstance().SaveLangs(result);
+                            }
                         }
                     }
                 });

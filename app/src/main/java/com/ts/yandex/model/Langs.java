@@ -5,36 +5,46 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by root on 04.05.2017.
  */
 
-public class Langs {
+@RealmClass
+public class Langs extends RealmObject {
 
-    @SerializedName("dirs")
-    @Expose
-    private List<String> dirs = null;
-    @SerializedName("langs")
-    @Expose
-    private Map<String,String> langs = null;
+    @PrimaryKey
+    private int id;
+    private RealmList<RealmString> dirs = null;
+    private RealmList<RealmMap> langs = null;
 
-    public List<String> getDirs() {
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public RealmList<RealmString> getDirs() {
         return dirs;
     }
-
-    public void setDirs(List<String> dirs) {
-        this.dirs = dirs;
+    public void setDirs(RealmList<RealmString> value) {
+        this.dirs = value;
     }
 
-    public Map<String,String> getLangs() {
+    public RealmList<RealmMap> getLangs() {
         return langs;
     }
-
-    public void setLangs(Map<String,String> langs) {
-        this.langs = langs;
+    public void setLangs(RealmList<RealmMap> value) {
+        this.langs = value;
     }
-
 }

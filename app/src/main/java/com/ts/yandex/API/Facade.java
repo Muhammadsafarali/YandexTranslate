@@ -53,8 +53,10 @@ public class Facade extends Observable implements Observer {
         httpManager.getLangs();
     }
 
-    public void SaveLangs(Langs _jobject) {
+    public Langs getLocalLangs() { return dbManager.getLangs(myApplication.getInstance());}
 
+    public void SaveLangs(Langs _langs) {
+        dbManager.SaveLangs(myApplication.getInstance(), _langs);
     }
 
     public void RemoveHistory() {
@@ -68,6 +70,8 @@ public class Facade extends Observable implements Observer {
     public void MarkFavorite(History _history) {
         dbManager.MarkFavorite(myApplication.getInstance(), _history);
     }
+
+
 
     @Override
     public void update(Observable observable, Object obj) {
