@@ -21,5 +21,19 @@ public class Constant {
     public final static String deleted = "deleted";
     public final static String date = "date";             // время запроса
 
+    //  =========  ResultObserver  =========
+    public final static int translate_save_complete = 0;
+    public final static int langs_save_complete = 1;
+
+
+    //  =========  ResultActivity  =========
+    public final static int FromLangCode = 31;
+    public final static int ToLangCode = 32;
+
+    public final static String FromLangExtra = "FromLangExtra";
+    public final static String ToLangExtra = "ToLangExtra";
+
+
+
 
 }
