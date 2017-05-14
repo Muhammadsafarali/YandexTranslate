@@ -30,7 +30,7 @@ public class DbManager extends Observable {
     // Добавление в историю. Работает
     public void SaveHistory(Context context, final String _text, final TranslateResult _jobject) {
         final Realm myRealm = RealmBase.getInstance(context);
-
+//TODO Проверка на повторение перевода
         Long id = (Long)myRealm.where(History.class).max(Constant.id);
         Integer nextId;
         if (id == null) {

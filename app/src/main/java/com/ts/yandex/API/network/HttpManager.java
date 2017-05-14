@@ -24,7 +24,7 @@ public class HttpManager {
 
     private Subscription subscription;
 
-    public void TranslateText(final String _text) {
+    public void TranslateText(final String _text, String _lang) {
 
         if (subscription != null)
             subscription.unsubscribe();
@@ -32,7 +32,7 @@ public class HttpManager {
         myApplication context = myApplication.get(myApplication.getInstance());
         Routes routes = context.getRoutes();
 
-        subscription = routes.translateText(_text, Constant.KEY, "en", "plain", 1, "fun")
+        subscription = routes.translateText(_text, Constant.KEY, _lang, "plain", 1, "fun")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(context.getDefaultSubscribeScheduler())
                 .subscribe(new Subscriber<JsonObject>() {

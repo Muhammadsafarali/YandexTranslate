@@ -33,8 +33,8 @@ public class Facade extends Observable implements Observer {
         return instance;
     }
 
-    public void TranslateText(String _text) {
-        httpManager.TranslateText(_text);
+    public void TranslateText(String _text, String _lang) {
+        httpManager.TranslateText(_text, _lang);
     }
 
     public void SaveHistory(String _text, TranslateResult _jobject) {

@@ -1,7 +1,9 @@
 package com.ts.yandex;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +24,8 @@ import java.util.Observer;
 public class LangsActivity extends Activity implements Observer {
 
     private static ListView listView;
+    private String[] names;
+    private Langs langs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +50,9 @@ public class LangsActivity extends Activity implements Observer {
             ResultObserver result = (ResultObserver)obj;
             if (result.getCode() == Constant.langs_save_complete) {
 //                Log.e("LANGS_ACTIVITY", "Update");
-                Langs langs = Facade.getInstance().getLocalLangs();
+                langs = Facade.getInstance().getLocalLangs();
 
-                String[] names = new String[langs.getLangs().size()];
+                names = new String[langs.getLangs().size()];
                 for (int i = 0; i < langs.getLangs().size(); i++) {
                     names[i] = langs.getLangs().get(i).getValue();
                 }
@@ -57,7 +61,10 @@ public class LangsActivity extends Activity implements Observer {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        onBackPressed();
+                        Intent intent = new Intent();
+                        intent.putExtra(Constant.SelectLangExtra, langs.getLangs().get(i).getKey() + ":" + langs.getLangs().get(i).getValue());
+                        setResult(RESULT_OK, intent);
+                        finish();
                     }
                 });
             }
