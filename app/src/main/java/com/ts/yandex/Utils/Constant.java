@@ -30,10 +30,7 @@ public class Constant {
     public final static int FromLangCode = 31;
     public final static int ToLangCode = 32;
 
-    public final static String FromLangExtra = "FromLangExtra";
-    public final static String ToLangExtra = "ToLangExtra";
-
-
+    public final static String SelectLangExtra = "SelectLangExtra";
 
 
 }

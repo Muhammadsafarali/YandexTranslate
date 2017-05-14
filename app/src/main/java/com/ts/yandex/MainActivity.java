@@ -9,9 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -44,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
     private TextView ToolBarFromLang;
     private TextView ToolBarToLang;
+    private String fromLang = "ru";
+    private String toLang = "en";
 
     private Timer timer = new Timer();
     private final long DELAY = 1000; // мс
@@ -58,8 +58,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
         translateView = (TextView) findViewById(R.id.tv_translate);
         Facade.getInstance().addObserver(this);
         editText = (EditText) findViewById(R.id.edit_text);
-        editText.addTextChangedListener(new TextWatcher() {
 
+        // Обработка ввода текста пользователем
+        editText.addTextChangedListener(new TextWatcher() {
             String text;
 
             @Override
@@ -82,17 +83,27 @@ public class MainActivity extends AppCompatActivity implements Observer {
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            Facade.getInstance().TranslateText(text);
+                            Facade.getInstance().TranslateText(text, makeLangStringForRequest());
                         }
                     }, DELAY);
                 }
             }
         });
 
+        ToolBarFromLang = (TextView) findViewById(R.id.toolbar_from_langs);
+        ToolBarToLang = (TextView) findViewById(R.id.toolbar_to_langs);
 
         initTabHost();
         initTabLayout();
 //        Facade.getInstance().RemoveHistory();/**/
+    }
+
+    // Сформировать строку вида "ru-en"
+    private String makeLangStringForRequest() {
+        StringBuilder _lang = new StringBuilder(fromLang);
+        _lang.append("-");
+        _lang.append(toLang);
+        return _lang.toString();
     }
 
     private void initTabLayout() {
@@ -129,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // Выбрать язык оригинала
         TextView tvFromLangs = (TextView) findViewById(R.id.toolbar_from_langs);
         tvFromLangs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 startActivityForResult(intent, Constant.FromLangCode);
             }
         });
+
+        // Выбрать язык перевода
         TextView tvToLangs = (TextView) findViewById(R.id.toolbar_to_langs);
         tvToLangs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,14 +188,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 int i = tabHost.getCurrentTab();
                 switch (i) {
                     case 0: {
-//                        menuItem.setVisible(false);
                     } break;
                     case 1: {
-//                        menuItem.setVisible(true);
                         MainActivity.this.PrintHistory(Facade.getInstance().GetHistory());
                     } break;
                     case 2: {
-//                        menuItem.setVisible(false);
                     } break;
                 }
             }
@@ -201,14 +213,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
 
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.delete, menu);
-        menuItem = menu.findItem(R.id.menu_remove_all);
-        menuItem.setVisible(false);
-        return true;
-    }*/
-
     public void RemoveHistoryClick(View view) {
         if (tabPosition == 0)
             Facade.getInstance().RemoveHistory();
@@ -217,29 +221,49 @@ public class MainActivity extends AppCompatActivity implements Observer {
         PrintHistory(new ArrayList<History>());
     }
 
+    private void swapLang() {
+        String toolbarLangFrom = this.ToolBarFromLang.getText().toString();
+        this.ToolBarFromLang.setText(this.ToolBarToLang.getText().toString());
+        this.ToolBarToLang.setText(toolbarLangFrom);
 
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menu_remove_all) {
-            Facade.getInstance().RemoveHistory();
-            GetHistory();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
+        String tmp = fromLang;
+        fromLang = toLang;
+        toLang = tmp;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
-            case Constant.FromLangCode: {
-                String from = data.getStringExtra(Constant.FromLangExtra);
-            }break;
-            case Constant.ToLangCode: {
-                String to = data.getStringExtra(Constant.ToLangExtra);
-            } break;
-            default: return;
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constant.FromLangCode: {
+                    String from = data.getStringExtra(Constant.SelectLangExtra);
+                    String[] str = from.split(":");
+
+                    if (str[0].equals(toLang)) {
+                        swapLang();
+                    }
+                    else {
+                        MainActivity.this.ToolBarFromLang.setText(str[1]);
+                        fromLang = str[0];
+                    }
+                }
+                break;
+                case Constant.ToLangCode: {
+                    String to = data.getStringExtra(Constant.SelectLangExtra);
+                    String[] str = to.split(":");
+
+                    if (str[0].equals(fromLang)) {
+                        swapLang();
+                    }
+                    else {
+                        MainActivity.this.ToolBarToLang.setText(str[1]);
+                        toLang = str[0];
+                    }
+                }
+                break;
+                default:
+                    return;
+            }
         }
     }
 
@@ -251,10 +275,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 translateView.setText(String.valueOf(result.getObj()));
             }
         }
-    }
-
-    public void GetLang(View view) {
-        Log.e(LOG_TAG, "GetLang");
     }
 
 
