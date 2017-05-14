@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private TabHost tabHost;
     private TabLayout tabLayout;
     private EditText editText;
-//    private static MenuItem menuItem;  // Кнопка меню в toolbar удаления истории
     private HistoryList adapter;
     private TextView translateView;
     private int tabPosition;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private String toLang = "en";
 
     private Timer timer = new Timer();
-    private final long DELAY = 1000; // мс
+    private final long DELAY = 1000; // мс. Задержка. Ожидание продолжения ввода текста пользователем
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LangsActivity.class);
+                intent.putExtra(Constant.lang, getResources().getString(R.string.tb_from_lang));
                 startActivityForResult(intent, Constant.FromLangCode);
             }
         });
@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LangsActivity.class);
+                intent.putExtra(Constant.lang, getResources().getString(R.string.tb_to_lang));
                 startActivityForResult(intent, Constant.ToLangCode);
             }
         });

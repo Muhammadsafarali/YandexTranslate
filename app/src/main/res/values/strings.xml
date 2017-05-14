@@ -2,4 +2,6 @@
     <string name="app_name">yandex</string>
 
     <string name="search_hint">Поиск</string>
+    <string name="tb_from_lang">Язык оригинала</string>
+    <string name="tb_to_lang">Язык перевода</string>
 </resources>

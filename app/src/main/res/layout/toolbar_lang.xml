@@ -23,7 +23,7 @@
 
             <!--android:onClick="GetFromLangs"-->
             <TextView
-                android:id="@+id/toolbar_from_langs"
+                android:id="@+id/toolbar_get_lang"
                 style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -3,11 +3,13 @@ package com.ts.yandex;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ts.yandex.API.Facade;
 import com.ts.yandex.Utils.Constant;
@@ -36,6 +38,11 @@ public class LangsActivity extends Activity implements Observer {
 
         Facade.getInstance().addObserver(this);
         Facade.getInstance().getLangs();
+
+        // Установить заголовок
+        Intent intent = getIntent();
+        TextView toolbarText = (TextView) findViewById(R.id.toolbar_get_lang);
+        toolbarText.setText(intent.getStringExtra(Constant.lang));
     }
 
     @Override
