@@ -6,4 +6,5 @@
 
     <color name="borderColor">#ffdc60</color>
     <color name="grayColor">#cbcbcb</color>
+    <color name="list_backgraund">#FFEEEEEE</color>
 </resources>

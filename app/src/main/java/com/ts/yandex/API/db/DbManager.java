@@ -6,6 +6,8 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 import com.ts.yandex.Utils.Constant;
 import com.ts.yandex.model.History;
+import com.ts.yandex.model.Langs;
+import com.ts.yandex.model.ResultObserver;
 import com.ts.yandex.model.TranslateResult;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class DbManager extends Observable {
     // Добавление в историю. Работает
     public void SaveHistory(Context context, final String _text, final TranslateResult _jobject) {
         final Realm myRealm = RealmBase.getInstance(context);
-
+//TODO Проверка на повторение перевода
         Long id = (Long)myRealm.where(History.class).max(Constant.id);
         Integer nextId;
         if (id == null) {
@@ -48,8 +50,12 @@ public class DbManager extends Observable {
         RealmBase.save(myRealm, h);
         myRealm.close();
 
+        ResultObserver resultObserver = new ResultObserver();
+        resultObserver.setCode(Constant.translate_save_complete);
+        resultObserver.setObj(_jobject.getText().get(0));
+
         setChanged();
-        notifyObservers(_jobject.getText().get(0));
+        notifyObservers(resultObserver);
     }
 
     // Получить список истории. Работает
@@ -164,5 +170,36 @@ public class DbManager extends Observable {
             myRealm.commitTransaction();
         }
     }
+
+    // ==========  Langs  ==========
+    public void SaveLangs(Context context, Langs _langs) {
+        Realm myRealm = RealmBase.getInstance(context);
+
+        RealmResults<Langs> langs = myRealm.where(Langs.class).findAll();
+        if (langs != null && langs.size() > 0) {
+            RealmBase.deleteList(myRealm, langs);
+        }
+
+        RealmBase.save(myRealm, _langs);
+        myRealm.close();
+
+        ResultObserver result = new ResultObserver();
+        result.setCode(Constant.langs_save_complete);
+
+        setChanged();
+        notifyObservers(result);
+    }
+
+    public Langs getLangs(Context context) {
+        Realm myRealm = RealmBase.getInstance(context);
+
+        Langs langs = myRealm.where(Langs.class).findFirst();
+        Langs result = new Langs();
+        result.setDirs(langs.getDirs());
+        result.setLangs(langs.getLangs());
+
+        return result;
+    }
+
 
 }
